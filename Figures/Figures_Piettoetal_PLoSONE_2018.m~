@@ -1,0 +1,350 @@
+%%%%%%%%%%%%% GNG %%%%%%%%%%%%
+
+close all; clc;clear all
+% Add path to EEGLAB for the statcond.m function
+
+load ERP_biosemi_emotiv 
+load correctedERP_biosemi_emotiv
+load allERP_biosemi_emotiv
+
+times   = times*1000;
+timese  = timese*1000;
+
+colerbk{1}  = [0.50 0.50 1.00; 1.00 0.50 0.50];
+colerbk{2}  = [0.50 0.90 0.50; 1.00 0.85 0.50];
+colerps{1}  = [0.00 0.00 1.00; 1.00 0.00 0.00];
+colerps{2}  = [0.25 0.90 0.00; 1.00 0.85 0.00];
+
+coln2bk     = [0.50 0.50 0.50; 0.50 0.80 1.00];
+coln2       = [0.00 0.00 0.00; 0.00 0.80 1.00];
+
+TIMEWIN     = [200 320; 280 400];
+
+figure(1); clf
+    set(gcf,'Color','w','Position',[70 1 900 450])
+    set(gcf, 'PaperPositionMode', 'auto')
+    set(gcf, 'InvertHardcopy', 'off')
+    annotation('textbox','string','A)','Position',[0.01 0.90 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    annotation('textbox','string','B)','Position',[0.58 0.90 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    annotation('textbox','string','C)','Position',[0.01 0.40 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    annotation('textbox','string','D)','Position',[0.58 0.40 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    
+    fw = 0.225; fh = 0.35;
+    axpos = {   [0.085 0.60 fw fh],[0.355 0.60 fw fh],[0.63 0.60 fw fh],[0.90 0.60 0.10 fh];...
+                [0.085 0.10 fw fh],[0.355 0.10 fw fh],[0.63 0.10 fw fh],[0.90 0.10 0.10 fh]};
+    
+    YLIMI = [-10 10];
+    XLIMI = [-200 800];
+    for j=1:2
+        axes('Position',axpos{1,j})
+            hold on
+                plot(XLIMI,[0 0],'k--')
+                plot([0 0],YLIMI,'k--')
+                for k = 1:2;
+                    errorPatch = niceBars2(times, mERP{j}(:,k)', eERP{j}(:,k)',colerbk{j}(k,:),0.5); hold on;
+                    h(j,k)=plot(times, mERP{j}(:,k),'Color',colerps{j}(k,:),'LineWidth',1.5);
+                    set(errorPatch,'EdgeAlpha',0);
+                end
+            hold off
+            if (j==1); ylabel('Amplitude (uV)' ,'FontName','Arial','FontSize',10); end
+            if (j==2); set(gca,'YColor','w'); end
+            set(gca,'YLim',YLIMI)
+            set(gca,'XLim',XLIMI,'XColor','w')
+            set(gca,'FontName','Arial','FontSize',10)
+    end
+    
+    YLIMI = [-5 5];
+    alpha = 0.01;
+    for j=1:2
+        axes('Position',axpos{2,j})
+            DATA={allERP{j}(:,:,1),allERP{j}(:,:,2)};
+            [~,~,pvals] = statcond(DATA, 'mode', 'bootstrap', 'paired', 'on', 'naccu', 1000);
+            
+            N2timesign  = [];
+            timewin     = TIMEWIN(j,:);
+            sign        = find(pvals<alpha);
+            N2timesign  = times(sign(times(sign)>timewin(1) & times(sign)<timewin(2)));
+            yvalue      = repmat(3,1,length(N2timesign));
+            
+            hold on
+                plot(XLIMI,[0 0],'k--')
+                plot([0 0],YLIMI,'k--')
+                k = 3;
+                    errorPatch = niceBars2(times, mERP{j}(:,k)', eERP{j}(:,k)',coln2bk(j,:),0.5); hold on;
+                    h(j,k)=plot(times, mERP{j}(:,k),'Color',coln2(j,:),'LineWidth',1.5);
+                    set(errorPatch,'EdgeAlpha',0);
+    
+                    h(j,4) = plot(N2timesign,yvalue,'-','Color',coln2(j,:),'LineWidth',4);
+            hold off
+            xlabel('Time (ms)'      ,'FontName','Arial','FontSize',10)
+            if (j==1); ylabel('Amplitude (uV)' ,'FontName','Arial','FontSize',10); end
+            if (j==2); set(gca,'YColor','w'); end
+            set(gca,'YLim',YLIMI)
+            set(gca,'XLim',XLIMI)
+            set(gca,'FontName','Arial','FontSize',10)
+    end
+    
+    axes('Position',axpos{1,3})
+        YLIMI = [-10 10];
+        XLIMI = [-500 500];
+        hold on
+            for j=1:2
+                plot(XLIMI,[0 0],'k--')
+                plot([0 0],YLIMI,'k--')
+                for k = 1:2;
+                    ind = ~isnan(maERP{j}(:,k)');
+                    errorPatch = niceBars2(timese(ind), maERP{j}(ind,k)', eaERP{j}(ind,k)',colerbk{j}(k,:),0.5); hold on;
+                    h(j,k)=plot(timese(ind), maERP{j}(ind,k),'Color',colerps{j}(k,:),'LineWidth',1.5);
+                    set(errorPatch,'EdgeAlpha',0);
+                end
+            end
+        hold off
+        set(gca,'YColor','w');
+        set(gca,'YLim',YLIMI)
+        set(gca,'XLim',XLIMI,'XColor','w')
+        set(gca,'FontName','Arial','FontSize',10)
+        
+    axes('Position',axpos{2,3})
+        YLIMI = [-5 5];
+        XLIMI = [-500 500];
+        hold on
+            k = 3;
+            plot(XLIMI,[0 0],'k--')
+            plot([0 0],YLIMI,'k--')
+            for j=1:2
+                ind = ~isnan(maERP{j}(:,1)') | ~isnan(maERP{j}(:,2)');
+                errorPatch = niceBars2(timese(ind), maERP{j}(ind,k)', eaERP{j}(ind,k)',coln2bk(j,:),0.5); hold on;
+                h(j,k)=plot(timese(ind), maERP{j}(ind,k),'Color',coln2(j,:),'LineWidth',1.5);
+                set(errorPatch,'EdgeAlpha',0);
+            end
+        hold off
+        xlabel('Time (ms)'      ,'FontName','Arial','FontSize',10)
+        set(gca,'YLim',YLIMI,'YColor','w')
+        set(gca,'XLim',XLIMI)
+        set(gca,'FontName','Arial','FontSize',10)
+        
+    axes('Position',axpos{1,4})
+        YLIMI = [-1 0];
+        XLIMI = [-1 0];
+        hold on
+            for j=1:2
+                for k = 1:2;
+                    h(j,k)=plot([1 2],[1 2],'Color',colerps{j}(k,:));
+                end
+            end
+        hold off
+        set(gca,'Visible','off');
+        set(gca,'YLim',YLIMI)
+        set(gca,'XLim',XLIMI)
+        [~, hobj, ~, ~] = legend([h(1,1),h(1,2),h(2,1),h(2,2)],{'BIO/GO','BIO/NOGO','EMO/GO','EMO/NOGO'},'Location','West'); 
+        legend boxoff
+        set(hobj,'linewidth',2);
+        
+    axes('Position',axpos{2,4})
+        YLIMI = [-1 0];
+        XLIMI = [-1 0];
+        hold on
+            k = 3;
+            for j=1:2
+                h(j,k)=plot([1 2],[1 2],'Color',coln2(j,:));
+            end
+        hold off
+        set(gca,'Visible','off');
+        set(gca,'YLim',YLIMI)
+        set(gca,'XLim',XLIMI)
+        [~, hobj, ~, ~] = legend([h(1,3),h(2,3)],{'BIO/N2','EMO/N2'},'Location','West');
+        legend boxoff
+        set(hobj,'linewidth',2);
+    
+%% %%%%%%%% RESTING %%%%%%%%%%
+close all; clear all; clc;
+
+load('Spectra.mat');
+
+load('newpeaks.mat');
+
+load('DFA.mat');
+
+eoF_n = DFA.emotiv_open ;
+eoF_n = mean(eoF_n(:,[1:4 6:end]),2);
+dfa.eoF_n = eoF_n; 
+
+ecF_n = DFA.emotiv_closed;
+ecF_n = mean(ecF_n(:,[1:4 6:end]),2);
+dfa.ecF_n = ecF_n;
+
+boF_n = DFA.biosemi_open;
+boF_n = mean(boF_n(:,[1:4 6:end]),2);
+dfa.boF_n = boF_n;
+
+bcF_n = DFA.biosemi_closed;
+bcF_n = mean(bcF_n(:,[1:4 6:end]),2);
+dfa.bcF_n = bcF_n;
+
+% BIOSEMI
+roieantop = mean(Spectra.biosemi_open([7 8 9 10],:,:),1);  roieantop = mean(roieantop,3);
+roiecenop = mean(Spectra.biosemi_open([4 5 12 13],:,:),1); roiecenop = mean(roiecenop,3);  
+roieoccop = mean(Spectra.biosemi_open([1 2 3 14],:,:),1);  roieoccop = mean(roieoccop,3);  
+roieantcl = mean(Spectra.biosemi_closed([7 8 9 10],:,:),1);  roieantcl = mean(roieantcl,3);  
+roiecencl = mean(Spectra.biosemi_closed([4 5 12 13],:,:),1); roiecencl = mean(roiecencl,3); 
+roieocccl = mean(Spectra.biosemi_closed([1 2 3 14],:,:),1);  roieocccl = mean(roieocccl,3); 
+
+freqeeg  = Spectra.freqs;
+inifreqe = find(freqeeg == 1);
+finfreqe = find(freqeeg == 30);
+
+% EMOTIV
+roimantop = mean(Spectra.emotiv_open([1 3 12 14],:,:),1); roimantop = mean(roimantop,3); 
+roimcenop = mean(Spectra.emotiv_open([4 5 10 11],:,:),1); roimcenop = mean(roimcenop,3); 
+roimoccop = mean(Spectra.emotiv_open([6 7 8 9],:,:),1);   roimoccop = mean(roimoccop,3); 
+roimantcl = mean(Spectra.emotiv_closed([1 3 12 14],:,:),1); roimantcl = mean(roimantcl,3); 
+roimcencl = mean(Spectra.emotiv_closed([4 5 10 11],:,:),1); roimcencl = mean(roimcencl,3); 
+roimocccl = mean(Spectra.emotiv_closed([6 7 8 9],:,:),1);   roimocccl = mean(roimocccl,3); 
+
+freqemo  = Spectra.freqs;
+inifreqm = find(freqemo == 1);
+finfreqm = find(freqemo == 30);
+
+% Frequency peaks
+opant = signrank(peaks.roieantop(2,:),peaks.roimantop(2,:));
+opcen = signrank(peaks.roiecenop(2,:),peaks.roimcenop(2,:));
+opocc = signrank(peaks.roieoccop(2,:),peaks.roimoccop(2,:));
+clant = signrank(peaks.roieantcl(2,:),peaks.roimantcl(2,:));
+clcen = signrank(peaks.roiecencl(2,:),peaks.roimcencl(2,:));
+clocc = signrank(peaks.roieocccl(2,:),peaks.roimocccl(2,:));
+
+pvalues = [opant opant opcen opcen opocc opocc clant clant clcen clcen clocc clocc];
+
+condnames   = { 'roieantop' 'roimantop' 'roieantcl' 'roimantcl' 'roiecenop' 'roimcenop' 'roiecencl' 'roimcencl' 'roieoccop' 'roimoccop'  'roieocccl' 'roimocccl'};
+roinames    = { 'roi = [ANT]; cond = [OPEN]' 'roi = [ANT]; cond = [OPEN]' 'roi = [ANT]; cond = [CLOSED]' 'roi = [ANT]; cond = [CLOSED]'...
+                'roi = [CEN]; cond = [OPEN]' 'roi = [CEN]; cond = [OPEN]' 'roi = [CEN]; cond = [CLOSED]' 'roi = [CEN]; cond = [CLOSED]'...
+                'roi = [OCC]; cond = [OPEN]' 'roi = [OCC]; cond = [OPEN]' 'roi = [OCC]; cond = [CLOSED]' 'roi = [OCC]; cond = [CLOSED]'};
+
+%% Plot
+col       = [0.00 0.00 0.00; 0.70 0.70 0.70];
+hFig = figure(1); clf
+    set(hFig,'Color','w','Position',[80 1 840 970])
+    set(hFig, 'PaperPositionMode', 'auto')
+    set(hFig, 'InvertHardcopy', 'off')
+    annotation('textbox','string','A)','Position',[0.025 0.875 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    annotation('textbox','string','B)','Position',[0.495 0.875 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    annotation('textbox','string','C)','Position',[0.025 0.20 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+    annotation('textbox','string','D)','Position',[0.495 0.20 0.10 0.10],'LineStyle','none','FontName','Arial','FontSize',12,'FontWeight','bold');
+
+    fw = 0.40; fh = 0.175;
+    axpos = {   [0.075 0.770 fw fh],[0.525 0.770 fw fh]; ...
+                [0.075 0.560 fw fh],[0.525 0.560 fw fh]; ...
+                [0.075 0.350 fw fh],[0.525 0.350 fw fh]; ...
+                [0.075 0.075 fw fh],[0.525 0.075 fw fh]};
+
+    YLIMI = [-10 15];
+    XLIMI = [0 25];
+    axes('Position',axpos{1,1})
+        hold on
+            title('EYES-OPEN spectra : roi = [ANT]','FontName','Arial','FontSize',10)
+            p(1) = plot(freqeeg(inifreqe:finfreqe), roieantop(inifreqe:finfreqe), 'Color', col(1,:),'LineWidth', 2.5);
+            p(2) = plot(freqemo(inifreqm:finfreqm), roimantop(inifreqm:finfreqm),'Color',col(2,:),'LineWidth', 2.5);
+        hold off
+        box on
+        set(gca,'YLim',YLIMI)
+        set(gca,'XLim',XLIMI,'XTickLabel',[])
+        set(gca,'FontName','Arial','FontSize',10)
+
+    axes('Position',axpos{1,2})
+        hold on
+            title('EYES-CLOSED : roi = [ANT]','FontName','Arial','FontSize',10)
+            p(1) = plot(freqeeg(inifreqe:finfreqe), roieantcl(inifreqe:finfreqe),'Color', col(1,:),'LineWidth', 2.5);
+            p(2) = plot(freqemo(inifreqm:finfreqm), roimantcl(inifreqm:finfreqm),'Color',col(2,:), 'LineWidth', 2.5);
+        hold off
+        box on
+        set(gca,'YLim',YLIMI,'YTickLabel',[])
+        set(gca,'XLim',XLIMI,'XTickLabel',[])
+        set(gca,'FontName','Arial','FontSize',10)
+
+    axes('Position',axpos{2,1})
+        hold on
+            title('EYES-OPEN spectra : roi = [CEN]','FontName','Arial','FontSize',10)
+            p(1) = plot(freqeeg(inifreqe:finfreqe), roiecenop(inifreqe:finfreqe),'Color', col(1,:), 'LineWidth', 2.5);
+            p(2) = plot(freqemo(inifreqm:finfreqm), roimcenop(inifreqm:finfreqm),'Color',col(2,:),'LineWidth', 2.5);
+        hold off
+        box on
+        set(gca,'YLim',YLIMI)
+        set(gca,'XLim',XLIMI,'XTickLabel',[])
+        ylabel('Power 10*log10^(microvolt^2 / Hz)','FontName','Arial','FontSize',10)
+        set(gca,'FontName','Arial','FontSize',10)
+
+    axes('Position',axpos{2,2})
+        hold on
+            title('EYES-CLOSED spectra : roi = [CEN]','FontName','Arial','FontSize',10)
+            p(1) = plot(freqeeg(inifreqe:finfreqe), roiecencl(inifreqe:finfreqe),'Color', col(1,:),'LineWidth', 2.5);
+            p(2) = plot(freqemo(inifreqm:finfreqm), roimcencl(inifreqm:finfreqm),'Color',col(2,:), 'LineWidth', 2.5);
+        hold off
+        box on
+        set(gca,'YLim',YLIMI,'YTickLabel',[])
+        set(gca,'XLim',XLIMI,'XTickLabel',[])
+        set(gca,'FontName','Arial','FontSize',10)
+
+    axes('Position',axpos{3,1})
+        hold on
+            title('EYES-OPEN spectra : roi = [OCC]','FontName','Arial','FontSize',10)
+            p(1) = plot(freqeeg(inifreqe:finfreqe), roieoccop(inifreqe:finfreqe),'Color', col(1,:), 'LineWidth', 2.5);
+            p(2) = plot(freqemo(inifreqm:finfreqm), roimoccop(inifreqm:finfreqm),'Color',col(2,:),'LineWidth', 2.5);
+        hold off
+        box on
+        set(gca,'YLim',YLIMI)
+        set(gca,'XLim',XLIMI)
+        xlabel('Frequency [Hz]','FontName','Arial','FontSize',10)
+        set(gca,'FontName','Arial','FontSize',10)
+
+    axes('Position',axpos{3,2})
+        hold on
+            title('EYES-CLOSED spectra : roi = [OCC]','FontName','Arial','FontSize',10)
+            p(1) = plot(freqeeg(inifreqe:finfreqe), roieocccl(inifreqe:finfreqe),'Color', col(1,:),'LineWidth', 2.5);
+            p(2) = plot(freqemo(inifreqm:finfreqm), roimocccl(inifreqm:finfreqm),'Color',col(2,:), 'LineWidth', 2.5);
+        hold off
+        box on
+        set(gca,'YLim',YLIMI,'YTickLabel',[])
+        set(gca,'XLim',XLIMI)
+        xlabel('Frequency [Hz]','FontName','Arial','FontSize',10)
+        legend(p,{'BIOSEMI','EMOTIV'},'Location','NorthEast','FontName','Arial','FontSize',10)
+        set(gca,'FontName','Arial','FontSize',10)
+
+    n = [128:128:35840]';
+    condnames_dfa           =  {'eoF_n' 'boF_n';        'ecF_n' 'bcF_n'};
+    condnames_alpha_dfa     =  {'eoF_n_AS' 'ecF_n_AS';  'boF_n_AS' 'bcF_n_AS'};
+    condnames_enve_dfa      =  {'mop' 'mcl';            'eop' 'ecl'};
+    system                  =  {'EMOTIV' 'EMOTIV';      'EEG' 'EEG'};
+    condi                   =  {'EYES-OPEN' 'EYESOPEN';    'EYES-CLOSED' 'EYES-CLOSED'};
+    for cond = 1:length(condnames_alpha_dfa)
+        oA = polyfit(log(n(1:end)),log(dfa.(condnames_dfa{cond,1})(1:end)),1);
+        oB = polyval(oA,log(n(1:end)));
+        cA = polyfit(log(n(1:end)),log(dfa.(condnames_dfa{cond,2})(1:end)),1);
+        cB = polyval(cA,log(n(1:end)));
+ 
+        axes('Position',axpos{4,cond});
+            hold on
+                %title({'Double-logarithmic plots'; ['of the DFA fluctuation measure ' system{cond}]},'FontName','Arial','FontSize',10);
+                title({[condi{cond} ': DFA fluctuation measure']},'FontName','Arial','FontSize',10);
+                p(1) = plot(log(n),log(dfa.(condnames_dfa{cond,2})),'.','Color', col(1,:),'MarkerSize',15);
+                plot(log(n(1:end)),cB,'k-');   
+                p(2) = plot(log(n),log(dfa.(condnames_dfa{cond,1})),'.','Color', col(2,:),'MarkerSize',15);
+                plot(log(n(1:end)),oB,'k-');
+            hold off
+            box on
+            set(gca,'FontName','Arial','FontSize',10)
+            xlabel('window size [s]','FontName','Arial','FontSize',10)
+
+            set(gca,'XLim',[min(log(n))-0.1, max(log(n))+0.1]) 
+            set(gca,'YLim',[min(log(dfa.(condnames_dfa{cond,1})))-0.2, max(log(dfa.(condnames_dfa{cond,2})))+0.2])
+            
+            set(gca,'XTick',[min(log(n)), log(n(3)), log(n(10)), log(n(50)), log(n(120)), log(n(280))],...
+                    'XTickLabel',{'1','3','10','50','120','280'});
+            ylabel('Log 10 <F(tau)>','FontName','Arial','FontSize',10)
+            if (cond==2);
+                %legend(p,{sprintf('eyes-closed: Alpha = %.2f', cA(1)), sprintf('eyes-open: Alpha = %.2f',oA(1))}, ...
+                 %       'Location','SouthEast','FontName','Arial','FontSize',10)
+                 legend(p,{'BIOSEMI', 'EMOTIV'}, ...
+                        'Location','SouthEast','FontName','Arial','FontSize',10)
+            end
+    end
+        
