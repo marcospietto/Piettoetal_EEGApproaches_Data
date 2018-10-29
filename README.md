@@ -21,13 +21,14 @@ Juan E. Kamienkowski (juank (arroba) dc (dot) com (dot) ar)
 #### Go/NoGo Task
 Data is organized in two files, one containing latency uncorrected data (gng/DATA.mat) and one containing latency corrected data (gng/DATA_den.mat). Each .mat file contains 
 
-  Name             Size                Bytes  Class     Description
+| Name    | Size      | Bytes    | Class  | Description                                                                                          |
+|---------|-----------|----------|--------|------------------------------------------------------------------------------------------------------|
+| BIODATA | 15607x128 | 15981568 | double | trials x times, average between F3/F4 channels.                                                      |
+| BIOINFO | 15607x3   | 374568   | double | trials x information about the trial (Participant number, Trial number, Condition: 1 = Go; 2 = NoGo) |
+| EMODATA | 15083x128 | 15444992 | double | trials x times, average between F3/F4 channels.                                                      |
+| EMOINFO | 15083x3   | 361992   | double | trials x information about the trial (Participant number, Trial number, Condition: 1 = Go; 2 = NoGo) |
+| times   | 1x128     | 1024     | double | 1 x times (in seconds)                                                                               |
 
-  BIODATA      15607x128            15981568  double 	trials x times, average between F3/F4 channels. 
-  BIOINFO      15607x3                374568  double	trials x information about the trial (Participant number, Trial number, Condition: 1 = Go; 2 = NoGo)
-  EMODATA      15083x128            15444992  double 	trials x times, average between F3/F4 channels.
-  EMOINFO      15083x3                361992  double	trials x information about the trial (Participant number, Trial number, Condition: 1 = Go; 2 = NoGo)
-  times            1x128                1024  double    1 x times (in seconds)
 
 Data presented here were segmented into 1000 msec epochs, between 200 msec before and 800 msec after the onset of the stimulus, downsampled to 128Hz, and re-referenced offline to the algebraic average of the P7 and P8 channels (the closest electrodes to the right and left mastoids). For further details on data collection and preprocessing please refer to Pietto et al (PLoS ONE, 2018).
 
