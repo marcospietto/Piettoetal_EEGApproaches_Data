@@ -8,7 +8,7 @@ Experiments' code and Emotiv SDK's bindings for Python are available in https://
 
 # How to cite us
 #### Please, if you like it / use it cite us:
-Pietto ML, Gatti M, Raimondo F, Lipina SJ, and Kamienkowski JE. "Electrophysiological approaches in the study of cognitive development outside the lab" (accepted, 2018)
+Pietto, M. L., Gatti, M., Raimondo, F., Lipina, S. J., & Kamienkowski, J. E. (2018). Electrophysiological approaches in the study of cognitive development outside the lab. PloS one, 13(11), e0206983.
 #### And let us know!!
 Marcos L. Pietto (marcos.pietto (arroba) gmail (dot) com)
 Mathias Gatti (mathigatti (arroba) gmail (dot) com)
