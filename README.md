@@ -1,14 +1,14 @@
-# Data and analysis code from Pietto et al (PLoS ONE, 2018)
-These are the data and analysis code from Pietto et al (PLoS ONE, 2018). Analysis were carried out using Matlab and [EEGLAB v13.5.4b](https://sccn.ucsd.edu/eeglab/index.php). Also, for the analysis of temporal correlations with Detrended Fluctuation Analysis (DFA) we used the function available [here](https://la.mathworks.com/matlabcentral/fileexchange/19795-detrended-fluctuation-analysis), and for the wavelet denoising we use the [EP_den package](https://www2.le.ac.uk/centres/csn/software/ep_den) (Centre for Systems Neuroscience, University of Leicester, UK). For further details please refer to Pietto et al (PLoS ONE, 2018).
+# Data and analysis code from Pietto et al (PLOS ONE, 2018)
+These are the data and analysis code from Pietto et al (PLOS ONE, 2018). Analysis were carried out using Matlab and [EEGLAB v13.5.4b](https://sccn.ucsd.edu/eeglab/index.php). Also, for the analysis of temporal correlations with Detrended Fluctuation Analysis (DFA) we used the function available [here](https://la.mathworks.com/matlabcentral/fileexchange/19795-detrended-fluctuation-analysis), and for the wavelet denoising we use the [EP_den package](https://www2.le.ac.uk/centres/csn/software/ep_den) (Centre for Systems Neuroscience, University of Leicester, UK). For further details please refer to Pietto et al (PLoS ONE, 2018).
 
-This project is part of a larger collaboration between the Unidad de Neurobiología Aplicada (CEMIC - CONICET, Argentina; http://pobrezaydesarrollocognitivo.blogspot.com/) and the Laboratorio de Inteligencia Artificial Aplicada (Instituto de Cs. de la Computación, Fac. de Cs. Exactas y Naturales, UBA - CONICET, Argentina; https://liaa.dc.uba.ar/). Our general goal is to study the influence of adverse environmental conditions on the organization and reorganization of the brain structure and function, and how it involves distinct neural systems at different levels of organization. Thus, we measure EEG in children from low socio-economic status contexts to evaluate the efficacy of interventions, aimed to enhance cognitive development in children facing unfavorable social conditions (see also Pietto ML, Kamienkowski JE, Lipina S "Electrophysiological approaches in the study of childhood poverty influence on cognition" (2017) book chapter in “Neuroscience and Social Science: The missing link” Springer Books).
+This project is part of a larger collaboration between the Unidad de Neurobiología Aplicada (CEMIC - CONICET, Argentina; https://cemic.edu.ar/una.php/) and the Laboratorio de Inteligencia Artificial Aplicada (Instituto de Cs. de la Computación, Fac. de Cs. Exactas y Naturales, UBA - CONICET, Argentina; https://liaa.dc.uba.ar/). Our general goal is to study the influence of adverse environmental conditions on the organization and reorganization of the brain structure and function, and how it involves distinct neural systems at different levels of organization. Thus, we measure EEG in children from low socio-economic status contexts to evaluate the efficacy of interventions, aimed to enhance cognitive development in children facing unfavorable social conditions (see also Pietto ML, Kamienkowski JE, Lipina S "Electrophysiological approaches in the study of childhood poverty influence on cognition" (2017) book chapter in “Neuroscience and Social Science: The missing link” Springer Books).
 
 # Experiments' code and Emotiv SDK's bindings for Python
 Experiments' code and Emotiv SDK's bindings for Python are available in https://github.com/mathigatti/Emotiv-Experiments.
 
 # How to cite us
 #### Please, if you like it / use it cite us:
-Pietto, M. L., Gatti, M., Raimondo, F., Lipina, S. J., & Kamienkowski, J. E. (2018). Electrophysiological approaches in the study of cognitive development outside the lab. PloS one, 13(11), e0206983.
+Pietto, M. L., Gatti, M., Raimondo, F., Lipina, S. J., & Kamienkowski, J. E. (2018). Electrophysiological approaches in the study of cognitive development outside the lab. Plos one, 13(11), e0206983.
 #### And let us know!!
 Marcos L. Pietto (marcos.pietto (arroba) gmail (dot) com)
 Mathias Gatti (mathigatti (arroba) gmail (dot) com)
@@ -35,7 +35,7 @@ Data presented here were segmented into 1000 msec epochs, between 200 msec befor
 Data is organized in two folders, each containing files from biosemi and emotiv respectively.
 File names codes 'Participant numer'_'Emotiv or Biosemi'_'Open or closed eyes'.set, for instance S01_EMO_CLOSED.set
 
-Data files are in EEGLAB format (.set/.fdt). Each file contains 14 electrodes (the original from Emotiv and the corresponding ones from Biosemi) and comprises different experiment time. Data were downsampled to 128Hz and re-referenced offline to the average reference accross the 14 electrodes. For further details on data collection and preprocessing please refer to Pietto et al (PLoS ONE, 2018).
+Data files are in EEGLAB format (.set/.fdt). Each file contains 14 electrodes (the original from Emotiv and the corresponding ones from Biosemi) and comprises different experiment time. Data were downsampled to 128Hz and re-referenced offline to the average reference accross the 14 electrodes. For further details on data collection and preprocessing please refer to Pietto et al (PLOS ONE, 2018).
 
 
 # Figures
